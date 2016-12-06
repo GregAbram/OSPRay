@@ -170,6 +170,8 @@ namespace ospray {
       void frameBufferClear(OSPFrameBuffer _fb,
                                     const uint32 fbChannelFlags) override;
 
+			OSPExternalRays traceExternalRays(OSPRenderer _renderer, OSPExternalRays _raysIn) override;
+
       /*! call a renderer to render a frame buffer */
       float renderFrame(OSPFrameBuffer _sc,
                                OSPRenderer _renderer,

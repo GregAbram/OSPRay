@@ -214,6 +214,9 @@ SET(OSPRAY_SOURCES
   render/pathtracer/materials/Matte.ispc
   render/pathtracer/materials/Matte.cpp
 
+	render/ptracer/PTracerRenderer.cpp
+  render/ptracer/PTracerRenderer.ispc
+
   api/API.cpp
   api/Device.cpp
   api/LocalDevice.cpp

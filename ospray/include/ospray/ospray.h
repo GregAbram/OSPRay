@@ -41,6 +41,7 @@
 #include <sys/types.h>
 #include <stdint.h>
 
+#include "OSPExternalRays.h"
 #include "OSPDataType.h"
 #include "OSPTexture.h"
 
@@ -649,6 +650,14 @@ extern "C" {
                                         OSPVolume,
                                         const osp_vec3f *worldCoordinates,
                                         const size_t count);
+#endif
+
+#ifdef __cplusplus
+extern "C"
+{
+  OSPExternalRays ospNewExternalRays();
+  OSPExternalRays ospTraceRays(OSPRenderer renderer, OSPExternalRays& raysIn);
+};
 #endif
 
 #ifdef __cplusplus

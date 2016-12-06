@@ -21,6 +21,7 @@
 #include "../fb/Tile.ih"
 #include "../common/Ray.ih"
 #include "../texture/Texture2D.ih"
+#include "../include/ospray/OSPExternalRays.h"
 
 struct Renderer;
 struct Model;
@@ -62,8 +63,25 @@ typedef unmasked void (*Renderer_RenderTileFct)(uniform Renderer *uniform self,
                                        uniform int taskIndex);
 typedef unmasked void *uniform (*Renderer_BeginFrameFct)(uniform Renderer *uniform self,
                                        uniform FrameBuffer *uniform fb);
+
 typedef unmasked void (*Renderer_EndFrameFct)(uniform Renderer *uniform self,
                                      void *uniform perFrameData);
+
+typedef void (*Renderer_TraceRaysFct)(uniform Renderer *uniform self,
+                                     void *uniform perFrameData,
+                                     const uniform int32 nRaysIn,
+                                     uniform ExternalRaySOA *uniform raysIn);
+
+typedef void (*Renderer_GenerateRaysFct)(uniform Renderer *uniform self,
+																		 const uniform int32 nRaysIn,
+                                     uniform ExternalRaySOA *uniform raysIn,
+																		 uniform int *uniform offsets,
+                                     uniform ExternalRaySOA *uniform raysOut);
+
+typedef void (*Renderer_LightingFct)(uniform Renderer *uniform self,
+                                     const uniform int32 nRaysIn,
+																		 uniform ExternalRaySOA *uniform raysIn);
+
 
 struct Renderer {
   Renderer_RenderSampleFct renderSample;
@@ -71,6 +89,12 @@ struct Renderer {
   Renderer_RenderTileFct   renderTile;
   Renderer_BeginFrameFct   beginFrame;
   Renderer_EndFrameFct     endFrame;
+
+  Renderer_TraceRaysFct     traceRays;
+  Renderer_GenerateRaysFct  generateAORays;
+  Renderer_GenerateRaysFct  generateShadowRays;
+  Renderer_LightingFct      diffuseLighting;
+  Renderer_LightingFct      ambientLighting;
 
   void        *cppEquivalent;
 

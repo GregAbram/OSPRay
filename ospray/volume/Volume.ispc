@@ -123,3 +123,18 @@ export void Volume_computeSamples(void *uniform _self,
     (*results)[i] = sample;
   }
 }
+
+export void Volume_setIsovalues(void *uniform _self, const uniform int n, uniform float *uniform values)
+{
+  uniform Volume *uniform self = (uniform Volume *uniform)_self;
+  self->nIsovalues = n;
+  self->isovalues = values;
+}
+
+export void Volume_setSlices(void *uniform _self, const uniform int n, uniform vec4f *uniform values)
+{
+  uniform Volume *uniform self = (uniform Volume *uniform)_self;
+  self->nSlicePlanes = n;
+  self->slicePlanes = values;
+}
+

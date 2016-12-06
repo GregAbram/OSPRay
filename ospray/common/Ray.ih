@@ -66,7 +66,8 @@ struct Ray {
   // this value to store the upper 32 bits of the primitive ID
   int primID_hi64;
 
-  void *uniform userData;
+  //   void *uniform userData; // GDA
+	int class;  // GDA 0: surface 1: opaque volume 2: exitted
 };
 
 #define infinity (1e20f)

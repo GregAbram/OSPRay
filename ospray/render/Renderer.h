@@ -21,11 +21,14 @@
 #include "common/Model.h"
 #include "fb/FrameBuffer.h"
 #include "texture/Texture2D.h"
+#include "ospray/OSPExternalRays.h"
 
 namespace ospray {
 
   struct Material;
   struct Light;
+
+	typedef osp::ExternalRays ExternalRays;
 
   /*! \brief abstract base class for all ospray renderers.
 
@@ -53,6 +56,8 @@ namespace ospray {
     /*! \brief render one frame, and put it into given frame buffer */
     virtual float renderFrame(FrameBuffer *fb,
                              const uint32 fbChannelFlags);
+
+		virtual OSPExternalRays traceExternalRays(OSPExternalRays raysIn);
 
     //! \brief called to initialize a new frame
     /*! this function gets called exactly once (on each node) at the

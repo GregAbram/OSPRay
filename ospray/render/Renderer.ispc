@@ -18,6 +18,7 @@
 #include "render/util.ih"
 #include "camera/Camera.ih"
 #include "common/Model.ih"
+#include "include/ospray/OSPExternalRays.h"
 
 // The layout of this struct must match that of OSPPickData in ospray.h
 void Renderer_default_renderSample(uniform Renderer *uniform self,
@@ -48,6 +49,36 @@ static unmasked void Renderer_default_endFrame(uniform Renderer *uniform self,
 {
   if (self->fb) self->fb = NULL;
 }
+
+void Renderer_default_generateAORays(uniform Renderer *uniform self,
+                                  const uniform int32 nRaysIn,
+                                  uniform ExternalRaySOA *uniform raysIn,
+                                  uniform int *uniform offsets,
+                                  uniform ExternalRaySOA *uniform raysOut)
+{}
+
+void Renderer_default_generateShadowRays(uniform Renderer *uniform self,
+                                  const uniform int32 nRaysIn,
+                                  uniform ExternalRaySOA *uniform raysIn,
+                                  uniform int *uniform offsets,
+                                  uniform ExternalRaySOA *uniform raysOut)
+{}
+
+void Renderer_default_ambientLighting(uniform Renderer *uniform self,
+                                  const uniform int32 nRaysIn,
+                                  uniform ExternalRaySOA *uniform raysIn)
+{}
+
+void Renderer_default_diffuseLighting(uniform Renderer *uniform self,
+                                  const uniform int32 nRaysIn,
+                                  uniform ExternalRaySOA *uniform raysIn)
+{}
+
+void Renderer_default_traceRays(uniform Renderer *uniform self,
+                                    void *uniform perFrameData,
+                                    const uniform int nRaysIn,
+                                    uniform ExternalRaySOA *uniform raysIn)
+{}
 
 unmasked void Renderer_default_renderTile(uniform Renderer *uniform self,
                                           void *uniform perFrameData,
@@ -188,11 +219,16 @@ void Renderer_Constructor(uniform Renderer *uniform self,
   self->spp    = 1;
   self->backgroundEnabled = true;
   self->maxDepthTexture = NULL;
-  self->renderSample = Renderer_default_renderSample;
-  self->renderTile   = Renderer_default_renderTile;
-  self->beginFrame   = Renderer_default_beginFrame;
-  self->endFrame     = Renderer_default_endFrame;
-  self->toneMap      = NULL;
+
+  self->renderSample 				= Renderer_default_renderSample;
+  self->renderTile   				= Renderer_default_renderTile;
+  self->beginFrame   				= Renderer_default_beginFrame;
+  self->endFrame     				= Renderer_default_endFrame;
+  self->toneMap      				= NULL;
+  self->traceRays           = Renderer_default_traceRays;
+  self->generateAORays      = Renderer_default_generateAORays;
+  self->generateShadowRays  = Renderer_default_generateShadowRays;
+
 }
 
 void Renderer_Constructor(uniform Renderer *uniform self,
@@ -206,6 +242,52 @@ void Renderer_Constructor(uniform Renderer *uniform self,
   self->camera = (uniform Camera *uniform)_camera;
   self->spp    = spp;
 }
+
+export void Renderer_traceRays(void *uniform _self,
+                                void *uniform perFrameData,
+                                const uniform int nRaysIn,
+                                uniform ExternalRaySOA *uniform raysIn)
+{
+  uniform Renderer *uniform self = (uniform Renderer *uniform)_self;
+  self->traceRays(self, perFrameData, nRaysIn, raysIn);
+}
+
+export void Renderer_generateAORays(void *uniform _self,
+                                const uniform int nRaysIn,
+                                uniform ExternalRaySOA *uniform raysIn,
+                                uniform int *uniform offsets,
+                                uniform ExternalRaySOA *uniform raysOut)
+{
+  uniform Renderer *uniform self = (uniform Renderer *uniform)_self;
+  self->generateAORays(self, nRaysIn, raysIn, offsets, raysOut);
+}
+
+export void Renderer_generateShadowRays(void *uniform _self,
+                                const uniform int nRaysIn,
+                                uniform ExternalRaySOA *uniform raysIn,
+                                uniform int *uniform offsets,
+                                uniform ExternalRaySOA *uniform raysOut)
+{
+  uniform Renderer *uniform self = (uniform Renderer *uniform)_self;
+  self->generateShadowRays(self, nRaysIn, raysIn, offsets, raysOut);
+}
+
+export void Renderer_ambientLighting(void *uniform _self,
+                                const uniform int nRaysIn,
+                                uniform ExternalRaySOA *uniform raysIn)
+{
+  uniform Renderer *uniform self = (uniform Renderer *uniform)_self;
+  self->ambientLighting(self, nRaysIn, raysIn);
+}
+
+export void Renderer_diffuseLighting(void *uniform _self,
+                                const uniform int nRaysIn,
+                                uniform ExternalRaySOA *uniform raysIn)
+{
+  uniform Renderer *uniform self = (uniform Renderer *uniform)_self;
+  self->diffuseLighting(self, nRaysIn, raysIn);
+}
+
 
 export void Renderer_renderTile(void *uniform _self,
                                 void *uniform perFrameData,

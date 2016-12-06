@@ -734,3 +734,16 @@ extern "C" void ospSampleVolume(float **results,
                                              (vec3f*)&worldCoordinates, count);
 }
 
+extern "C" OSPExternalRays ospNewExternalRays()
+{
+	return new osp::ExternalRays();
+}
+
+extern "C" OSPExternalRays ospTraceRays(OSPRenderer renderer, OSPExternalRays &raysIn)
+{
+	ASSERT_DEVICE();
+	return ospray::api::Device::current->traceExternalRays(renderer, raysIn);
+}
+
+
+

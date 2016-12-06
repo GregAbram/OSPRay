@@ -96,6 +96,15 @@ struct Volume {
 
   //! Bounding box for the volume in world coordinates.  This is an internal derived parameter and not meant to be redefined externally.
   uniform box3f boundingBox;
+
+  //! Whether to volume render
+  uniform bool volume_rendering;
+
+  uniform int nIsovalues;
+  uniform float *uniform isovalues;
+
+  uniform int nSlicePlanes;
+  uniform vec4f *uniform slicePlanes;
 };
 
 void Volume_Constructor(Volume *uniform volume,

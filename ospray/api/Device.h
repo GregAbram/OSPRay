@@ -206,6 +206,12 @@ namespace ospray {
         UNUSED(results, volume, worldCoordinates, count);
         NOT_IMPLEMENTED;
       }
+
+			virtual OSPExternalRays traceExternalRays(OSPRenderer renderer, OSPExternalRays rays)
+			{ 
+				UNUSED(renderer, rays);
+				NOT_IMPLEMENTED;
+			}
     };
   } // ::ospray::api
 } // ::ospray

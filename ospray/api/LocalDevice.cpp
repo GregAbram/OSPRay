@@ -554,6 +554,26 @@ namespace ospray {
       return 0;
     }
 
+    OSPExternalRays LocalDevice::traceExternalRays(OSPRenderer _renderer, OSPExternalRays _raysIn)
+    {
+      ExternalRays *raysIn = (ExternalRays *)_raysIn;
+      Renderer  *renderer = (Renderer *)_renderer;
+
+
+      OSPExternalRays raysOut = NULL;
+
+      try {
+        raysOut = renderer->traceExternalRays(raysIn);
+      } catch (std::runtime_error e) {
+        std::cerr << "=======================================================" << std::endl;
+        std::cerr << "# >>> ospray fatal error <<< " << std::endl << e.what() << std::endl;
+        std::cerr << "=======================================================" << std::endl;
+        exit(1);
+      }
+
+      return raysOut;
+
+    }
 
     /*! call a renderer to render a frame buffer */
     float LocalDevice::renderFrame(OSPFrameBuffer _fb,

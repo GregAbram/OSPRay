@@ -143,6 +143,8 @@ namespace ospray {
      // printf("time per frame %lf ms\n",(T1-T0)*1e3f);
   }
 
+	OSPExternalRays Renderer::traceExternalRays(OSPExternalRays raysIn) { return NULL; }
+
   OSPPickResult Renderer::pick(const vec2f &screenPos)
   {
     assert(getIE());

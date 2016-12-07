@@ -138,3 +138,10 @@ export void Volume_setSlices(void *uniform _self, const uniform int n, uniform v
   self->slicePlanes = values;
 }
 
+export void Volume_setVolumeRendering(void *uniform _self, const uniform bool &value)
+{
+  uniform Volume *uniform self = (uniform Volume *uniform)_self;
+  self->volume_rendering = value;
+}
+
+

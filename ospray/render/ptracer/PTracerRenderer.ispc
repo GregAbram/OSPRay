@@ -93,6 +93,8 @@ inline bool PTracerRenderer_LookForSliceHit(PTracerRenderer *uniform self, varyi
 		{
 			float t = (d - dot(ray.org, pnorm)) / denom;
 
+			// print("Slice T: %\n", t);
+
 			if (t >= ray.t0 && t <= tTermination)
 			{
 				tTermination = t;
@@ -179,12 +181,12 @@ void PTracerRenderer_traceRays(uniform Renderer *uniform pointer,
 	uniform float step = volume->samplingStep / volume->samplingRate;
 	uniform float epsilon = self->epsilon * step;
 
-	// print("YYYYYYYYY TRACE RAYS %%%%%%%%%%\n");
-
 	foreach (i = 0 ... nRaysIn)
 	{
 		enum { NONE, OPAQUE, GEOM, ISO, SLICE, BOUNDARY } term = NONE;
 		Ray ray;
+
+		// print("NEW RAY:\n%\n%\n", raysIn->x[i], raysIn->y[i]);
 
 		ray.org = make_vec3f(raysIn->ox[i], raysIn->oy[i], raysIn->oz[i]);
 		ray.dir = make_vec3f(raysIn->dx[i], raysIn->dy[i], raysIn->dz[i]);
@@ -203,6 +205,8 @@ void PTracerRenderer_traceRays(uniform Renderer *uniform pointer,
 
 		vec4f color = make_vec4f(raysIn->r[i], raysIn->g[i], raysIn->b[i], raysIn->o[i]);
 
+		// print("AA\n");
+
 		// tExit is the initial termination of the ray - infinity, or the AO radius
 		// Its used to determine if loop termination was due to timeout
 
@@ -216,6 +220,8 @@ void PTracerRenderer_traceRays(uniform Renderer *uniform pointer,
 
 		float tEntry, tExitVolume;
 		MyIntersectBox(ray, volume->boundingBox, tEntry, tExitVolume);
+
+		// print("BB\n");
 
 		// intersectBox(ray, volume->boundingBox, ray.t0, ray.t);
 
@@ -236,6 +242,7 @@ void PTracerRenderer_traceRays(uniform Renderer *uniform pointer,
 		int hitId = -1;		// indx of isosurface or slice that terminates the interval
 	
 		// Now we see if we hit a slice - this will move tTermination up it we do.
+		// print("slice: % % % %\n", volume->slicePlanes[0].x, volume->slicePlanes[0].y, volume->slicePlanes[0].z, volume->slicePlanes[0].w);
 
 		if (PTracerRenderer_LookForSliceHit(self, ray, tTermination, volume->nSlicePlanes, volume->slicePlanes, hitId, hit, raysIn, i)) 
 		{

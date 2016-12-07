@@ -164,6 +164,24 @@ namespace ospray {
                                                vec3f(0.f)));
     ispc::Volume_setVolumeClippingBox(ispcEquivalent,
                                       (const ispc::box3f &)volumeClippingBox);
+
+    // Set the isovalue(s).
+    Data *isovaluesData = (Data *)getParamData("isovalues", NULL);
+    if(isovaluesData)
+			ispc::Volume_setIsovalues(ispcEquivalent, isovaluesData->size(), (float *)isovaluesData->data);
+    else
+			ispc::Volume_setIsovalues(ispcEquivalent, 0, NULL);
+    
+    // Set the slice planes(s).
+    Data *slicesData = (Data *)getParamData("slices", NULL);
+    if(slicesData)
+			ispc::Volume_setSlices(ispcEquivalent, slicesData->size(), (ispc::vec4f *)slicesData->data);
+    else
+			ispc::Volume_setSlices(ispcEquivalent, 0, NULL);
+    
+    //! Set whether to volume render
+    ispc::Volume_setVolumeRendering(ispcEquivalent, (getParam1i("volume rendering", 0)));
+    
   }
 
 } // ::ospray
